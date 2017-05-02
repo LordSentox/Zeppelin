@@ -7,14 +7,14 @@
 #include <msp430g2553.h>
 #include "input.h"
 
-#define MAX_AC_VAL 1024.0
+#define input_range 32
 
-void update_display(float val) {
+void update_display() {
 	// Switch the LEDs on according to the level of voltage on the Input.
-	if (val >= 0.75) P1OUT = BIT6;
-	else if (val >= 0.5) P1OUT = (BIT0 + BIT6);
-	else if (val >= 0.25) P1OUT = BIT0;
-	else P1OUT = 0x0;
+	if (delta_Z >= 8 && delta_Z < 16) P1OUT = BIT6;
+	else if (delta_Z >= 0) P1OUT = (BIT0 + BIT6);
+	else if (delta_Z >= -8) P1OUT = BIT0;
+	else P1OUT = 0;
 }
 
 void main(void) {
@@ -25,15 +25,13 @@ void main(void) {
 	P1DIR |= (BIT0 + BIT6);
 	P1OUT &= ~(BIT0 + BIT6);
 
-	init_adc_input();
+	adc_init_inputs();
 
 	// Get the latest Conversion ASAP.
 	for (;;) {
-		// Start a new conversion and wait for it to finish.
-		ADC10CTL0 |= ADC10SC;
-		while ((ADC10CTL1 & ADC10BUSY) == 0x01);
+		adc_update_values();
 
 		// update the display.
-		update_display((float)ADC10MEM/MAX_AC_VAL);
+		update_display();
 	}
 }

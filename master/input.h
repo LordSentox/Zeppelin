@@ -7,9 +7,9 @@
 // Z describes the Positions from the Back to the Front of the Zeppelin. (Positive is front)
 // H describes the total height of the Zeppelin, usually from Ground.
 // Y describes the current yaw of the Zeppelin, to an arbitrary starting reference. (Positive is right viewed from top)
-volatile int delta_Z;
-volatile int delta_H;
-volatile int delta_Y;
+volatile short delta_Z;
+volatile short delta_H;
+volatile short delta_Y;
 
 // This function is called once, when you want to start reading the input from
 // your Input Potentiometers.

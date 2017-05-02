@@ -11,9 +11,9 @@
 
 void update_display() {
 	// Switch the LEDs on according to the level of voltage on the Input.
-	if (delta_Z >= 8 && delta_Z < 16) P1OUT = BIT6;
-	else if (delta_Z >= 0) P1OUT = (BIT0 + BIT6);
-	else if (delta_Z >= -8) P1OUT = BIT0;
+	if (delta_H >= 8 && delta_Z < 16) P1OUT = BIT6;
+	else if (delta_H >= 0) P1OUT = (BIT0 + BIT6);
+	else if (delta_H >= -8) P1OUT = BIT0;
 	else P1OUT = 0;
 }
 

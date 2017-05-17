@@ -16,15 +16,15 @@
 
 // Obviously, the two chips must be running on a similar clockspeed for this
 // to work, but if you had proper timers you would probably not use this protocol.
-#define TRUE_CYCLES  20000
-#define FALSE_CYCLES 10000
+#define TRUE_CYCLES  10000
+#define FALSE_CYCLES 5000
 
-#define BIT_GAP      20000
-#define PACKAGE_GAP  40000
+#define BIT_GAP      10000
+#define PACKAGE_GAP  20000
 
 // The possible derivation in Cycles information might have.
 // This should not be ecceedingly high, since that might produce overlap errors.
-#define AE 5000		// Acceptable Error
+#define AE 2500		// Acceptable Error
 
 // Pin definitions. These might be better to be defined or given as an Argument
 // by the software for later applications or in case I need multiple lines.

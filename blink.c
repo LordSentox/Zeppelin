@@ -1,42 +1,28 @@
-//***************************************************************************************
-//  MSP430 Blink the LED Demo - Software Toggle P1.0
-//
-//  Description; Toggle P1.0 by xor'ing P1.0 inside of a software loop.
-//  ACLK = n/a, MCLK = SMCLK = default DCO
-//
-//                MSP430x5xx
-//             -----------------
-//         /|\|              XIN|-
-//          | |                 |
-//          --|RST          XOUT|-
-//            |                 |
-//            |             P1.2|-->LED
-//
-//  J. Stevenson
-//  Texas Instruments, Inc
-//  July 2011
-//  Built with Code Composer Studio v5
-//***************************************************************************************
+#include <msp430g2452.h>
 
-#include <msp430g2553.h>
+void main(void) {
+	// Stop the watchdog timer
+	WDTCTL = WDTPW + WDTHOLD;
 
-unsigned int timerCount = 0;
-int main(void) {
-	/* Initialisation */
-	WDTCTL = WDTPW + WDTHOLD; // Stop the watchdog timer.
-	P1DIR |= BIT0; // Set the red LED to an Output pin.
-	P1OUT &= ~BIT0; // Turn the LED off initially.
+	// The output LED starts in the off state.
+	P1DIR |= BIT6;
 
-	CCTL0 = CCIE; // Enable Interrupt for CCTL0.
-	TACTL = TASSEL_2 | MC_2; // Set the Timer Input Selection to SMCLK and the mode to count upwards continuously.
+	// Interrupt on Pin 1.0 when it goes high.
+	P1DIR &= ~BIT3;
+	P1IES |= BIT3;
+	P1REN |= BIT3;					// Enable internal pull-up/down resistors
+  	P1OUT |= BIT3;					// Pull down the Pin internally
+	P1IE |= BIT3;
+	P1IFG &= ~BIT3;
 
-	__enable_interrupt();
+	_BIS_SR(CPUOFF + GIE);		// Enter LPM0 w/ interrupt
+	__no_operation();
+	while (1) {
+	}
 }
 
+void __attribute__((interrupt(PORT1_VECTOR))) p1_interrupt(void) {
+	P1OUT ^= BIT6;
 
-#pragma vector=TIMER0_A0_VECTOR
-__interrupt void timer_a(void) {
-	timerCount = (timerCount + 1) % 8;
-
-	if (timerCount == 0) P1OUT ^= BIT0;
+	P1IFG &= ~BIT3;
 }

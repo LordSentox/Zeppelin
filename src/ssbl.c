@@ -80,12 +80,15 @@ void __attribute__((interrupt(PORT1_VECTOR))) p1_interrupt(void) {
 			else {
 				// An error has occured while reading the package.
 				P1OUT ^= ERR_BIT;	// Flip the error bit
+
+				reset_current_package();
 			}
 		}
 		// The only other possibility is that it is the beginning of a new bit.
 		// If that is not the case, this is an error.
 		else if (delta_time <= BIT_GAP - AE || delta_time >= BIT_GAP + AE) {
 			P1OUT ^= ERR_BIT;		// Flip the error bit
+			reset_current_package();
 		}
 	}
 	else {
@@ -100,6 +103,7 @@ void __attribute__((interrupt(PORT1_VECTOR))) p1_interrupt(void) {
 		}
 		else {
 			P1OUT ^= ERR_BIT;		// Flip the error bit
+			reset_current_package();
 		}
 
 		++num_current_bit;
